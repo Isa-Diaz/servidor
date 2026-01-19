@@ -8,5 +8,5 @@ def test_criar_cliente_controller_retorna_erro():
         response = client.post("/clientes", json={"qualquer": "dado"})
 
         assert response.status_code == 400
-        assert response.json == "erro"
+        assert response.json["erro"] == "erro"
 

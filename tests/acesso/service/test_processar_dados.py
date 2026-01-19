@@ -90,4 +90,3 @@ def test_processar_dados_marshmallow_erro_telefone_invalido():
     }
     result = processar_dados(dados)
     assert "telefone" in result
-

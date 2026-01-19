@@ -249,5 +249,6 @@ def operacao_controller(id):
     return jsonify(result), 200
 
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5001, host="localhost")
+if __name__ == "__main__":  # pragma: no cover
+    app.run(debug=True, port=5001, host="localhost")  # pragma: no cover
+

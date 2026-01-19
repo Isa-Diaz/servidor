@@ -71,10 +71,9 @@ def test_atualizar_cliente_not_found(mock_get):
     response = client().put("/clientes/1", json={
         "nome": "Ana"
     })
-    # OBS: Seu código sempre retorna OK mesmo quando não existe o cliente.
-    # Aqui é necessário seguir o comportamento atual.
-    assert response.status_code == 200
-    assert response.json["id"] == 1  # retorna mesmo assim
+    
+    assert response.status_code == 404
+    assert response.json == {"erro": "Cliente não encontrado"}
 
 
 @patch("micro_servico.controller.storage_controller.delete_cliente")
