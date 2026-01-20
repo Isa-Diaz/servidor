@@ -8,35 +8,33 @@ def calcular_score(saldo):
         return saldo * 0.1
     return 0
 
-
 def processar_dados(dados):
     schema = ClienteSchema()
     try:
         dados_validados = schema.load(dados)
-    except ValidationError as err:  # pragma: no cover
-        return err.messages         # pragma: no cover
-    telefone_raw = dados_validados["telefone"]  # pragma: no cover
+    except ValidationError as err:
+        return {"erro": err.messages, "valido": False}
 
-
-    # Se vier lista, corrige 
-    if isinstance(telefone_raw, list):  # pragma: no cover
-        telefone_raw = telefone_raw[0]  # pragma: no cover
-
+    telefone_raw = dados_validados["telefone"]#pragma: no cover
+    if isinstance(telefone_raw, list):#pragma: no cover
+        telefone_raw = telefone_raw[0]#pragma: no cover
 
     telefone_str = str(telefone_raw)
 
     if not telefone_str.isdigit():
-        return "Telefone deve conter apenas números"
+        return {"erro": "Telefone deve conter apenas números", "valido": False}
 
     if len(telefone_str) not in (10, 11):
-        return "Telefone deve ter entre 10 e 11 dígitos"
+        return {"erro": "Telefone deve ter entre 10 e 11 dígitos", "valido": False}
 
     telefone = int(telefone_str)
 
     saldo_cc = float(dados_validados["saldo_cc"])
+    if saldo_cc < 0:
+        return {"erro": "Saldo inicial não pode ser negativo", "valido": False}
 
     if buscar_cliente_por_telefone(telefone):
-        return "Telefone já cadastrado"
+        return {"erro": "Telefone já cadastrado", "valido": False}
 
     if dados_validados["correntista"] is False:
         saldo_cc = 0
@@ -44,6 +42,7 @@ def processar_dados(dados):
     score_credito = calcular_score(saldo_cc)
 
     return {
+        "valido": True,
         "nome": dados_validados["nome"],
         "telefone": telefone,
         "correntista": dados_validados["correntista"],
@@ -51,11 +50,13 @@ def processar_dados(dados):
         "score_credito": score_credito
     }
 
-
 def criar_cliente_service(dados):
     result = processar_dados(dados)
-    if isinstance(result, str):
-        return result
+
+    if not result.get("valido"):
+        return {"erro": result["erro"]}
+    result.pop("valido")
+
     return criar_cliente(result)
 
 def atualizar_cliente_service(id, dados):
@@ -71,12 +72,6 @@ def atualizar_cliente_service(id, dados):
 
     nome = dados_validados.get("nome", cliente["nome"])
     telefone_str = str(dados_validados.get("telefone", cliente["telefone"]))
-
-
-    if not telefone_str.isdigit():
-        return "Telefone deve conter apenas números"
-    if len(telefone_str) not in (10, 11):
-        return "Telefone deve ter entre 10 e 11 dígitos"
 
     telefone = int(telefone_str)
 

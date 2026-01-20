@@ -1,4 +1,3 @@
-
 import requests
 
 url_acess = "http://localhost:5000/"
@@ -12,7 +11,6 @@ def listar_clientes():
     except ValueError:
         return {"erro": "Resposta inválida do microserviço", "raw": result.text}
 
-
 def buscar_cliente_por_id(id):
     id = str(id)
     url_nova = url_acess + endpoint_base + "/" + id
@@ -22,7 +20,6 @@ def buscar_cliente_por_id(id):
     except ValueError:
         return {"erro": "Resposta inválida do microserviço", "raw": result.text}
 
-
 def criar_cliente(dados):
     url_nova = url_acess + endpoint_base
     result = requests.post(url_nova, json=dados)
@@ -30,7 +27,6 @@ def criar_cliente(dados):
         return result.json()
     except ValueError:
         return {"erro": "Resposta inválida do microserviço", "raw": result.text}
-
 
 def atualizar_cliente(id, dados):
     id = str(id)
@@ -40,7 +36,6 @@ def atualizar_cliente(id, dados):
         return result.json()
     except ValueError:
         return {"erro": "Resposta inválida do microserviço", "raw": result.text}
-
 
 def deletar_cliente(id):
     id = str(id)

@@ -15,7 +15,6 @@ from ..client.client import listar_clientes, buscar_cliente_por_id
 app = Flask(__name__)
 swagger = Swagger(app)
 
-
 @app.route("/clientes", methods=["POST"])
 def criar_cliente_controller():
     """
@@ -34,19 +33,24 @@ def criar_cliente_controller():
           properties:
             nome:
               type: string
+              example: "João Silva"
             telefone:
               type: string
+              example: "11999999999"
             correntista:
               type: boolean
+              example: true
             saldo_cc:
               type: number
+              example: 0
     responses:
       201:
         description: Cliente criado com sucesso
       400:
-        description: Erro de validação
+        description: Erro de validação ou dados inválidos
     """
     dados = request.get_json()
+
     telefone = dados.get("telefone")
     if isinstance(telefone, list):
         telefone = telefone[0]
@@ -54,11 +58,13 @@ def criar_cliente_controller():
 
     result = criar_cliente_service(dados)
 
+    if isinstance(result, dict) and "erro" in result:
+        return jsonify(result), 400
+
     if isinstance(result, str):
         return jsonify({"erro": result}), 400
 
     return jsonify(result), 201
-
 
 @app.route("/clientes", methods=["GET"])
 def listar_clientes_controller():

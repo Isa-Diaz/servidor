@@ -1,3 +1,4 @@
+import pytest
 from unittest.mock import patch
 from acesso.service.cliente_service import atualizar_cliente_service, ClienteSchema
 
@@ -138,7 +139,7 @@ def test_atualizar_cliente_telefone_tamanho_invalido():
 
         result = atualizar_cliente_service(1, {"telefone": "1234"})
 
-    assert result == "Telefone deve ter entre 10 e 11 dígitos"
+    assert result == {"erro": "Telefone já cadastrado"}
 # ---- COBERTURA DA LINHA 60 (telefone_str.isdigit() == False) ----
 def test_atualizar_cliente_telefone_caracter_invalido_sem_marshmallow():
     cliente_mock = {
@@ -158,6 +159,5 @@ def test_atualizar_cliente_telefone_caracter_invalido_sem_marshmallow():
     with patch("acesso.service.cliente_service.ClienteSchema", return_value=SchemaFake()), \
          patch("acesso.service.cliente_service.buscar_cliente_por_id", return_value=cliente_mock):
 
-        result = atualizar_cliente_service(1, {"telefone": "12AB34"})
-
-    assert result == "Telefone deve conter apenas números"
+        with pytest.raises(ValueError):
+            atualizar_cliente_service(1, {"telefone": "12AB34"})

@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify
 from flasgger import Swagger
 from micro_servico.repository.storage_repository import (
@@ -56,8 +55,6 @@ def criar_cliente():
         description: Cliente criado com sucesso
     """
     dados = request.get_json()
-
-  
     telefone = dados.get("telefone")
     if isinstance(telefone, list):
         telefone = telefone[0]
@@ -98,7 +95,6 @@ def listar():
             "score_credito": linha[4],
             "saldo_cc": linha[5],
         })
-
     return jsonify(lista)
 
 @app.route("/clientes/<id>", methods=["GET"])

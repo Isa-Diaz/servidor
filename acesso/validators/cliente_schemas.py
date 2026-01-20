@@ -1,4 +1,3 @@
-
 from marshmallow import Schema, fields, validates, ValidationError
 
 class ClienteSchema(Schema):

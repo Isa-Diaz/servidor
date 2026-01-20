@@ -10,37 +10,30 @@ def make_mock_response(text):
     mock.text = text
     return mock
 
-
 @patch("requests.get", return_value=make_mock_response("X"))
 def test_listar_clientes_resposta_invalida(mock):
     out = client.listar_clientes()
     assert out["erro"] == "Resposta inválida do microserviço"
-
 
 @patch("requests.get", return_value=make_mock_response("Y"))
 def test_buscar_cliente_por_id_resposta_invalida(mock):
     out = client.buscar_cliente_por_id(1)
     assert out["erro"] == "Resposta inválida do microserviço"
 
-
 @patch("requests.post", return_value=make_mock_response("Z"))
 def test_criar_cliente_resposta_invalida(mock):
     out = client.criar_cliente({})
     assert out["erro"] == "Resposta inválida do microserviço"
-
 
 @patch("requests.put", return_value=make_mock_response("W"))
 def test_atualizar_cliente_resposta_invalida(mock):
     out = client.atualizar_cliente(1, {})
     assert "erro" in out
 
-
 @patch("requests.delete", return_value=make_mock_response("Q"))
 def test_deletar_cliente_resposta_invalida(mock):
     out = client.deletar_cliente(1)
     assert "erro" in out
-
-
 
 def test_criar_cliente_controller_telefone_lista():
     client_app = app.test_client()
@@ -56,7 +49,6 @@ def test_criar_cliente_controller_telefone_lista():
 def test_import_main_guard():
     import acesso.controller.cliente_controller
     assert True  
-
 
 def test_storage_criar_cliente_telefone_lista():
     client_s = storage_app.test_client()

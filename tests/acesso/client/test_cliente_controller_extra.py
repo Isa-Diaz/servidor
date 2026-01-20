@@ -20,7 +20,9 @@ def test_processar_dados_telefone_invalido_tipo(_):
         "correntista": True,
         "saldo_cc": "10"
     })
-    assert out == "Telefone deve conter apenas números"
+    assert out["erro"] == "Telefone deve conter apenas números"
+    assert out["valido"] is False
+
 
 
 @patch("acesso.service.cliente_service.ClienteSchema", return_value=SchemaFake())
@@ -31,7 +33,9 @@ def test_processar_dados_telefone_tamanho_invalido(_):
         "correntista": True,
         "saldo_cc": "10"
     })
-    assert out == "Telefone deve ter entre 10 e 11 dígitos"
+    assert out["erro"] == "Telefone deve ter entre 10 e 11 dígitos"
+    assert out["valido"] is False
+
 
 
 def test_processar_dados_forca_validationerror():
@@ -41,4 +45,5 @@ def test_processar_dados_forca_validationerror():
 
         result = processar_dados({"x": 1})
 
-        assert result == {"campo": ["erro"]}
+        assert result["erro"] == {"campo": ["erro"]}
+        assert result["valido"] is False

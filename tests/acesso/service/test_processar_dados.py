@@ -30,7 +30,11 @@ def test_processar_dados_telefone_duplicado():
     with patch("acesso.service.cliente_service.buscar_cliente_por_telefone", return_value=True):
         result = processar_dados(dados)
 
-    assert result == "Telefone já cadastrado"
+    assert result == {
+    "valido": False,
+    "erro": "Telefone já cadastrado"
+}
+
 
 
 def test_processar_dados_correntista_false_zera_saldo():
@@ -89,4 +93,5 @@ def test_processar_dados_marshmallow_erro_telefone_invalido():
         "saldo_cc": "100"
     }
     result = processar_dados(dados)
-    assert "telefone" in result
+    assert "telefone" in result["erro"]
+

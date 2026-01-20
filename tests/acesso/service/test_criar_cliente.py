@@ -1,4 +1,3 @@
-
 from unittest.mock import patch
 from acesso.service.cliente_service import criar_cliente_service
 
@@ -20,12 +19,20 @@ def test_criar_cliente_service_sucesso():
         "score_credito": 10.0
     }
 
-    with patch("acesso.service.cliente_service.processar_dados", return_value=resposta_mock), \
-         patch("acesso.service.cliente_service.criar_cliente", return_value=resposta_mock):
-
+    with patch(
+        "acesso.service.cliente_service.processar_dados",
+        return_value={"valido": True, "dados": resposta_mock}
+    ), patch(
+        "acesso.service.cliente_service.criar_cliente",
+        return_value=resposta_mock
+    ):
         assert criar_cliente_service(dados) == resposta_mock
 
 
 def test_criar_cliente_service_dados_invalidos():
-    with patch("acesso.service.cliente_service.processar_dados", return_value="Erro"):
-        assert criar_cliente_service({}) == "Erro"
+    with patch("acesso.service.cliente_service.processar_dados", return_value={
+    "valido": False,
+    "erro": "Erro"
+}):
+        assert criar_cliente_service({}) == {"erro": "Erro"}
+
